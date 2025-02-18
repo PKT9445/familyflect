@@ -1,7 +1,9 @@
 
 import { cn } from "@/lib/utils";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Bell, Home, Search, Settings, TreePine, User } from "lucide-react";
+import { Bell, Home, Menu, Search, Settings, TreePine, User, X } from "lucide-react";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 const navItems = [
   { to: "/", icon: Home, label: "Home" },
@@ -13,6 +15,7 @@ const navItems = [
 
 export default function Layout() {
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary/50 to-background">
@@ -21,7 +24,23 @@ export default function Layout() {
           <div className="mr-4 flex items-center space-x-2">
             <span className="text-xl font-semibold">Saksham</span>
           </div>
-          <nav className="flex flex-1 items-center space-x-2">
+          
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex flex-1 items-center space-x-2">
             {navItems.map(({ to, icon: Icon, label }) => (
               <NavLink
                 key={to}
@@ -35,6 +54,7 @@ export default function Layout() {
               </NavLink>
             ))}
           </nav>
+          
           <div className="ml-auto flex items-center space-x-4">
             <button className="nav-link flex items-center gap-2">
               <Bell className="h-4 w-4" />
@@ -42,6 +62,30 @@ export default function Layout() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/95">
+            <nav className="flex flex-col p-4 space-y-2">
+              {navItems.map(({ to, icon: Icon, label }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) =>
+                    cn(
+                      "nav-link flex items-center gap-2 px-4 py-3",
+                      isActive && "active"
+                    )
+                  }
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+        )}
       </header>
       <main className="page-container">
         <Outlet />
