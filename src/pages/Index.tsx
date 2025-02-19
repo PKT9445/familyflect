@@ -3,8 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Calendar, Users, Heart, MessageCircle, Share2, Image, Smile, Send } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, Users, Heart, MessageCircle, Share2, Image, Smile, Send, User } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 // Mock data for posts
@@ -13,7 +12,6 @@ const posts = [
     id: 1,
     author: {
       name: "Rahul Sharma",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul",
       role: "Community Leader"
     },
     content: "Excited to announce our upcoming Diwali celebration! 🪔 Join us for an evening of festivities, food, and cultural performances. Mark your calendars for next Saturday. #SakshamCommunity #Celebration",
@@ -26,7 +24,6 @@ const posts = [
     id: 2,
     author: {
       name: "Priya Patel",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
       role: "Event Coordinator"
     },
     content: "Thank you everyone for making yesterday's youth meetup a huge success! The energy and enthusiasm was incredible. Special thanks to our speakers and volunteers. Looking forward to our next gathering! 🙏",
@@ -74,10 +71,9 @@ const Index = () => {
           <Card className="glass-card border-none shadow-lg bg-white/80">
             <CardContent className="pt-6">
               <div className="flex gap-4 items-start">
-                <Avatar className="w-10 h-10 shrink-0">
-                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
+                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                  <User className="h-5 w-5 text-muted-foreground" />
+                </div>
                 <div className="flex-1 space-y-4 w-full">
                   <Textarea
                     placeholder="Share something with your community..."
@@ -107,10 +103,9 @@ const Index = () => {
           {posts.map((post) => (
             <Card key={post.id} className="glass-card border-none shadow-lg overflow-hidden hover:shadow-xl transition-shadow bg-white/80">
               <CardHeader className="flex flex-row items-center gap-4">
-                <Avatar className="w-12 h-12 shrink-0">
-                  <AvatarImage src={post.author.avatar} />
-                  <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                </Avatar>
+                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                  <User className="h-6 w-6 text-muted-foreground" />
+                </div>
                 <div className="space-y-1">
                   <CardTitle className="text-base sm:text-lg font-semibold">
                     {post.author.name}
