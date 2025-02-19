@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +12,45 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Briefcase, Building2, GraduationCap, Heart, Shield, User } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Settings = () => {
+  const { toast } = useToast();
+  const [privacySettings, setPrivacySettings] = useState({
+    profileVisible: false,
+    showDob: false,
+    showGender: false,
+    showMarital: false,
+    showBlood: false,
+    showParents: false,
+    showSiblings: false,
+    showEmail: false,
+    showPhone: false,
+    showAddress: false,
+    showEducation: false,
+    showExperience: false,
+    showBusiness: false,
+  });
+
+  const handlePrivacyChange = (setting: string) => {
+    setPrivacySettings(prev => {
+      const newSettings = {
+        ...prev,
+        [setting]: !prev[setting]
+      };
+      
+      // Save to localStorage or your backend here
+      localStorage.setItem('privacySettings', JSON.stringify(newSettings));
+      
+      toast({
+        title: "Settings updated",
+        description: "Your privacy settings have been saved successfully.",
+      });
+      
+      return newSettings;
+    });
+  };
+
   return (
     <div className="space-y-6">
       <section className="text-center space-y-4">
@@ -39,7 +77,11 @@ const Settings = () => {
             <div className="pb-4 border-b">
               <div className="flex items-center justify-between">
                 <Label htmlFor="profile-visible" className="font-medium">Make profile visible</Label>
-                <Switch id="profile-visible" />
+                <Switch 
+                  id="profile-visible" 
+                  checked={privacySettings.profileVisible}
+                  onCheckedChange={() => handlePrivacyChange('profileVisible')}
+                />
               </div>
               <p className="text-sm text-muted-foreground mt-1">
                 Your profile will be hidden from all members if turned off
@@ -55,19 +97,35 @@ const Settings = () => {
               <div className="grid gap-4 pl-6">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-dob">Show Date of Birth</Label>
-                  <Switch id="show-dob" />
+                  <Switch 
+                    id="show-dob"
+                    checked={privacySettings.showDob}
+                    onCheckedChange={() => handlePrivacyChange('showDob')}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-gender">Show Gender</Label>
-                  <Switch id="show-gender" />
+                  <Switch 
+                    id="show-gender"
+                    checked={privacySettings.showGender}
+                    onCheckedChange={() => handlePrivacyChange('showGender')}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-marital">Show Marital Status</Label>
-                  <Switch id="show-marital" />
+                  <Switch 
+                    id="show-marital"
+                    checked={privacySettings.showMarital}
+                    onCheckedChange={() => handlePrivacyChange('showMarital')}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-blood">Show Blood Group</Label>
-                  <Switch id="show-blood" />
+                  <Switch 
+                    id="show-blood"
+                    checked={privacySettings.showBlood}
+                    onCheckedChange={() => handlePrivacyChange('showBlood')}
+                  />
                 </div>
               </div>
             </div>
@@ -81,11 +139,19 @@ const Settings = () => {
               <div className="grid gap-4 pl-6">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-parents">Show Parents' Information</Label>
-                  <Switch id="show-parents" />
+                  <Switch 
+                    id="show-parents"
+                    checked={privacySettings.showParents}
+                    onCheckedChange={() => handlePrivacyChange('showParents')}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-siblings">Show Siblings</Label>
-                  <Switch id="show-siblings" />
+                  <Switch 
+                    id="show-siblings"
+                    checked={privacySettings.showSiblings}
+                    onCheckedChange={() => handlePrivacyChange('showSiblings')}
+                  />
                 </div>
               </div>
             </div>
@@ -99,15 +165,27 @@ const Settings = () => {
               <div className="grid gap-4 pl-6">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-email">Show Email Address</Label>
-                  <Switch id="show-email" />
+                  <Switch 
+                    id="show-email"
+                    checked={privacySettings.showEmail}
+                    onCheckedChange={() => handlePrivacyChange('showEmail')}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-phone">Show Phone Number</Label>
-                  <Switch id="show-phone" />
+                  <Switch 
+                    id="show-phone"
+                    checked={privacySettings.showPhone}
+                    onCheckedChange={() => handlePrivacyChange('showPhone')}
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-address">Show Address</Label>
-                  <Switch id="show-address" />
+                  <Switch 
+                    id="show-address"
+                    checked={privacySettings.showAddress}
+                    onCheckedChange={() => handlePrivacyChange('showAddress')}
+                  />
                 </div>
               </div>
             </div>
@@ -121,7 +199,11 @@ const Settings = () => {
               <div className="grid gap-4 pl-6">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-education">Show Educational Background</Label>
-                  <Switch id="show-education" />
+                  <Switch 
+                    id="show-education"
+                    checked={privacySettings.showEducation}
+                    onCheckedChange={() => handlePrivacyChange('showEducation')}
+                  />
                 </div>
               </div>
             </div>
@@ -135,7 +217,11 @@ const Settings = () => {
               <div className="grid gap-4 pl-6">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-experience">Show Work Experience</Label>
-                  <Switch id="show-experience" />
+                  <Switch 
+                    id="show-experience"
+                    checked={privacySettings.showExperience}
+                    onCheckedChange={() => handlePrivacyChange('showExperience')}
+                  />
                 </div>
               </div>
             </div>
@@ -149,7 +235,11 @@ const Settings = () => {
               <div className="grid gap-4 pl-6">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="show-business">Show Business Details</Label>
-                  <Switch id="show-business" />
+                  <Switch 
+                    id="show-business"
+                    checked={privacySettings.showBusiness}
+                    onCheckedChange={() => handlePrivacyChange('showBusiness')}
+                  />
                 </div>
               </div>
             </div>
