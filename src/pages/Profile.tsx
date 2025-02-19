@@ -160,7 +160,7 @@ const Profile = () => {
 
         <CardContent className="space-y-6">
           <Accordion type="single" collapsible className="w-full">
-            <ProfileSection icon={User} label="Personal Information">
+            <ProfileSection icon={User} label="Personal Information" value="personal">
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
                   <Label>First Name</Label>
@@ -283,7 +283,7 @@ const Profile = () => {
               </div>
             </ProfileSection>
 
-            <ProfileSection icon={Heart} label="Family Information">
+            <ProfileSection icon={Heart} label="Family Information" value="family">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Father's Name</Label>
@@ -322,7 +322,7 @@ const Profile = () => {
               </div>
             </ProfileSection>
 
-            <ProfileSection icon={Phone} label="Contact Information">
+            <ProfileSection icon={Phone} label="Contact Information" value="contact">
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Primary Address</Label>
@@ -362,7 +362,7 @@ const Profile = () => {
               </div>
             </ProfileSection>
 
-            <ProfileSection icon={GraduationCap} label="Education">
+            <ProfileSection icon={GraduationCap} label="Education" value="education">
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Highest Qualification</Label>
@@ -391,7 +391,7 @@ const Profile = () => {
               </div>
             </ProfileSection>
 
-            <ProfileSection icon={Briefcase} label="Experience">
+            <ProfileSection icon={Briefcase} label="Experience" value="experience">
               <div className="grid gap-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
@@ -423,7 +423,7 @@ const Profile = () => {
               </div>
             </ProfileSection>
 
-            <ProfileSection icon={Building2} label="Business Information">
+            <ProfileSection icon={Building2} label="Business Information" value="business">
               <div className="grid gap-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
@@ -463,7 +463,7 @@ const Profile = () => {
               </div>
             </ProfileSection>
 
-            <ProfileSection icon={User} label="Other Details">
+            <ProfileSection icon={User} label="Other Details" value="other">
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label>Member of Other Organizations</Label>
