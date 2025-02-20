@@ -12,6 +12,7 @@ import FamilyTree from "./pages/FamilyTree";
 import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/auth" element={<Auth />} />
           <Route path="/" element={<Layout />}>
             <Route index element={<Index />} />
             <Route path="profile" element={<Profile />} />
