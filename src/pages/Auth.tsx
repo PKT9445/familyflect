@@ -15,13 +15,14 @@ const Auth = () => {
   const [phone, setPhone] = useState("");
   const [sakshamCard, setSakshamCard] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate('/', { replace: true }); // Using replace to avoid adding to history
+        navigate('/', { replace: true });
       }
     });
   }, [navigate]);
@@ -36,7 +37,7 @@ const Auth = () => {
         password,
       });
       if (error) throw error;
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (error: any) {
       toast({
         title: "Error",
@@ -51,17 +52,42 @@ const Auth = () => {
   // Handle email sign up
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
       });
+
       if (error) throw error;
+
+      if (data.user && data.user.identities && data.user.identities.length === 0) {
+        toast({
+          title: "Error",
+          description: "This email is already registered. Please sign in instead.",
+          variant: "destructive",
+        });
+        setIsSignUp(false);
+        return;
+      }
+
       toast({
         title: "Success",
         description: "Check your email for the confirmation link",
       });
+      setIsSignUp(false);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -163,7 +189,7 @@ const Auth = () => {
             </TabsList>
 
             <TabsContent value="email">
-              <form onSubmit={handleEmailSignIn} className="space-y-4">
+              <form onSubmit={isSignUp ? handleEmailSignUp : handleEmailSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -184,15 +210,21 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    minLength={6}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Button type="submit" disabled={loading}>
                     <Mail className="mr-2 h-4 w-4" />
-                    Sign In
+                    {isSignUp ? "Create Account" : "Sign In"}
                   </Button>
-                  <Button type="button" onClick={handleEmailSignUp} variant="outline" disabled={loading}>
-                    Create Account
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsSignUp(!isSignUp)}
+                    disabled={loading}
+                  >
+                    {isSignUp ? "Back to Sign In" : "Create New Account"}
                   </Button>
                 </div>
               </form>
