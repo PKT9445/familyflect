@@ -1,14 +1,14 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Calendar, Users, Heart, MessageCircle, Share2, Image, Smile, Send, User, Menu } from "lucide-react";
+import { Calendar, Users, Heart, MessageCircle, Share2, Image, Smile, Send, User, Menu, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import EmojiPicker from 'emoji-picker-react';
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 // Mock data for posts
 const posts = [
