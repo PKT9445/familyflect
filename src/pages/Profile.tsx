@@ -22,7 +22,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Camera, Mail, Phone, MapPin, Upload, Building2, Briefcase, GraduationCap, Heart, User, Edit, Save, X } from "lucide-react";
+import { Camera, Mail, Phone, MapPin, Upload, Building2, Briefcase, GraduationCap, Heart, User, Edit, Save } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 
 // Section colors mapping
 const sectionColors = {
@@ -53,7 +52,7 @@ const ProfileSection = ({ icon: Icon, label, children, value }) => (
       sectionColors[value]
     )}>
       <div className="flex items-center gap-2">
-        <Icon className="h-5 w-5 text-primary-foreground [&_svg]:!rotate-0" />
+        <Icon className="h-5 w-5 text-primary-foreground" />
         <span>{label}</span>
       </div>
     </AccordionTrigger>
@@ -71,7 +70,6 @@ const DisplayField = ({ label, value }) => (
 );
 
 const Profile = () => {
-  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [profile, setProfile] = useState({
@@ -85,23 +83,29 @@ const Profile = () => {
     gotra: "",
     bloodGroup: "",
     spouseName: "",
+
     fatherName: "",
     motherName: "",
     siblings: ["", "", "", "", ""],
+
     primaryAddress: "",
     phoneNumber: "",
     emailAddress: "john.doe@example.com",
     alternateContact: "",
+
     highestQualification: "",
     specialization: "",
     otherQualifications: "",
+
     currentJobTitle: "",
     companyName: "",
     yearsOfExperience: "",
+
     businessName: "",
     businessType: "",
     businessAddress: "",
     businessWebsite: "",
+
     organizationMemberships: "",
     postServed: "",
     volunteerWork: "",
@@ -116,10 +120,6 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result as string);
-        toast({
-          title: "Profile picture updated",
-          description: "Your profile picture has been updated successfully.",
-        });
       };
       reader.readAsDataURL(file);
     }
@@ -132,45 +132,26 @@ const Profile = () => {
     }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    toast({
-      title: "Profile updated",
-      description: "Your profile has been updated successfully.",
-    });
-  };
-
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-16">
       <Card className="profile-card">
         <CardHeader className="text-center relative">
           <div className="absolute right-4 top-4 flex gap-2">
-            {!isEditing ? (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            {isEditing && (
               <Button
-                variant="outline"
+                variant="default"
                 size="icon"
-                onClick={() => setIsEditing(true)}
+                onClick={() => setIsEditing(false)}
               >
-                <Edit className="h-4 w-4" />
+                <Save className="h-4 w-4" />
               </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setIsEditing(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="default"
-                  size="icon"
-                  onClick={handleSave}
-                  className="bg-gradient-to-r from-orange-500 to-pink-500"
-                >
-                  <Save className="h-4 w-4" />
-                </Button>
-              </div>
             )}
           </div>
           <div className="mx-auto relative group">
