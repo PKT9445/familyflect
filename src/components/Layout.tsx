@@ -1,13 +1,15 @@
 
 import { cn } from "@/lib/utils";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Bell, Home, Menu, QrCode, Search, Settings, TreePine, User, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Calendar, Users } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const navItems = [
   { to: "/", icon: Home, label: "Home" },
@@ -35,8 +37,56 @@ const announcements = [
 
 export default function Layout() {
   const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [isScannerOpen, setScannerOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    // Check initial auth state
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && !session) {
+      navigate('/auth');
+    }
+  }, [session, loading, navigate]);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/auth');
+    } catch (error: any) {
+      toast({
+        title: "Error signing out",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  if (!session) {
+    return null;
+  }
 
   const openScanner = async () => {
     try {
@@ -99,23 +149,30 @@ export default function Layout() {
                         <Button
                           variant="secondary"
                           className="w-full justify-start hover:bg-white/50"
-                          onClick={() => window.location.href = "/profile"}
+                          onClick={() => navigate('/profile')}
                         >
                           View My Profile
                         </Button>
                         <Button
                           variant="secondary"
                           className="w-full justify-start hover:bg-white/50"
-                          onClick={() => window.location.href = "/family-tree"}
+                          onClick={() => navigate('/family-tree')}
                         >
                           Explore Family Tree
                         </Button>
                         <Button
                           variant="secondary"
                           className="w-full justify-start hover:bg-white/50"
-                          onClick={() => window.location.href = "/search"}
+                          onClick={() => navigate('/search')}
                         >
                           Search Members
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          className="w-full justify-start"
+                          onClick={handleSignOut}
+                        >
+                          Sign Out
                         </Button>
                       </div>
                     </CardContent>
@@ -153,6 +210,9 @@ export default function Layout() {
               <Bell className="h-4 w-4" />
               <span className="sr-only">Notifications</span>
             </button>
+            <Button variant="destructive" size="sm" onClick={handleSignOut}>
+              Sign Out
+            </Button>
           </div>
         </div>
       </header>
