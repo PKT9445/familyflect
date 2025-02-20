@@ -32,15 +32,20 @@ const Auth = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("Attempting sign in with:", email);
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
       if (error) throw error;
+      
+      console.log("Sign in successful:", data);
       navigate("/", { replace: true });
     } catch (error: any) {
+      console.error("Sign in error:", error);
       toast({
-        title: "Error",
+        title: "Error signing in",
         description: error.message,
         variant: "destructive",
       });
@@ -63,19 +68,26 @@ const Auth = () => {
     
     try {
       setLoading(true);
+      console.log("Attempting sign up with:", email);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: `${window.location.origin}/auth`,
+          data: {
+            email: email,
+          }
         },
       });
 
       if (error) throw error;
 
+      console.log("Sign up response:", data);
+
+      // Check if user already exists
       if (data.user && data.user.identities && data.user.identities.length === 0) {
         toast({
-          title: "Error",
+          title: "Account Exists",
           description: "This email is already registered. Please sign in instead.",
           variant: "destructive",
         });
@@ -83,14 +95,25 @@ const Auth = () => {
         return;
       }
 
-      toast({
-        title: "Success",
-        description: "Check your email for the confirmation link",
-      });
+      // Check if email confirmation is required
+      if (data.user && !data.session) {
+        toast({
+          title: "Success",
+          description: "Please check your email for the confirmation link.",
+        });
+      } else {
+        // If email confirmation is disabled, user will be automatically signed in
+        toast({
+          title: "Success",
+          description: "Account created successfully!",
+        });
+        navigate("/", { replace: true });
+      }
       setIsSignUp(false);
     } catch (error: any) {
+      console.error("Sign up error:", error);
       toast({
-        title: "Error",
+        title: "Error creating account",
         description: error.message,
         variant: "destructive",
       });
@@ -178,7 +201,9 @@ const Auth = () => {
       <Card className="w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Welcome to Saksham</CardTitle>
-          <CardDescription>Sign in or create an account to continue</CardDescription>
+          <CardDescription>
+            {isSignUp ? "Create a new account" : "Sign in to your account"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="email" className="w-full">
