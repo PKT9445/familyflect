@@ -61,16 +61,17 @@ export default function Layout() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Only redirect if not on the auth page and there's no session
   useEffect(() => {
-    if (!loading && !session) {
-      navigate('/auth');
+    if (!loading && !session && location.pathname !== '/auth') {
+      navigate('/auth', { replace: true }); // Using replace to avoid adding to history
     }
-  }, [session, loading, navigate]);
+  }, [session, loading, navigate, location.pathname]);
 
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
-      navigate('/auth');
+      navigate('/auth', { replace: true }); // Using replace to avoid adding to history
     } catch (error: any) {
       toast({
         title: "Error signing out",
@@ -84,7 +85,7 @@ export default function Layout() {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  if (!session) {
+  if (!session && location.pathname !== '/auth') {
     return null;
   }
 

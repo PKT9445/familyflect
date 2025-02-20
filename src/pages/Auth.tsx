@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,14 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/', { replace: true }); // Using replace to avoid adding to history
+      }
+    });
+  }, [navigate]);
 
   // Handle email sign in
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -139,12 +146,6 @@ const Auth = () => {
       setLoading(false);
     }
   };
-
-  // Check if user is already logged in
-  const session = supabase.auth.getSession();
-  if (session) {
-    return <Navigate to="/" replace />;
-  }
 
   return (
     <div className="container mx-auto max-w-md py-8">
